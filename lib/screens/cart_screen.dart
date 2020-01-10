@@ -4,9 +4,14 @@ import 'package:provider_pattern/providers/cart.dart';
 import 'package:provider_pattern/providers/orders.dart';
 import 'package:provider_pattern/widgets/cart_item.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   static const routeName = '/cart';
 
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final cartContainer = Provider.of<Cart>(context);
@@ -37,18 +42,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
-                  FlatButton(
-                    child: Text('ORDER NOW'),
-                    onPressed: () {
-                      var orderContainer =
-                          Provider.of<Orders>(context, listen: false);
-                      orderContainer.addOrder(
-                          cartContainer.items.values.toList(),
-                          cartContainer.totalAmount);
-                      cartContainer.clearCart();
-                    },
-                    textColor: Theme.of(context).primaryColor,
-                  )
+                  OrderButton(cartContainer: cartContainer)
                 ],
               ),
             ),
@@ -68,6 +62,44 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cartContainer,
+  }) : super(key: key);
+
+  final Cart cartContainer;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: _isLoading ? CircularProgressIndicator() : Text('ORDER NOW'),
+      onPressed: (widget.cartContainer.totalAmount <= 0 || _isLoading)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              var orderContainer = Provider.of<Orders>(context, listen: false);
+              await orderContainer.addOrder(
+                  widget.cartContainer.items.values.toList(),
+                  widget.cartContainer.totalAmount);
+              widget.cartContainer.clearCart();
+              setState(() {
+                _isLoading = false;
+              });
+            },
+      textColor: Theme.of(context).primaryColor,
     );
   }
 }

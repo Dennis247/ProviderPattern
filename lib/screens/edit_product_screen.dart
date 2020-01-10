@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_pattern/providers/product.dart';
 import 'package:provider_pattern/providers/products.dart';
