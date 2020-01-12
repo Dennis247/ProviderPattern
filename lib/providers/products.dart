@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   bool showFavouritesOnly = false;
-  final _baseUrl = "https://providerdemo-29777.firebaseio.com/products.json";
 
   List<Product> _items = [
     // Product(
@@ -44,13 +43,21 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  final String authToken;
+
+  Products(this.authToken, this._items);
+
+  final _baseUrl = "https://providerdemo-29777.firebaseio.com/products.json";
+
   List<Product> get items {
     return [..._items];
   }
 
   Future<void> getProducts() async {
     try {
-      final response = await http.get(_baseUrl);
+      final String url =
+          "https://providerdemo-29777.firebaseio.com/products.json?auth=$authToken";
+      final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, product) {
@@ -72,7 +79,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     try {
-      final response = await http.post(_baseUrl,
+      final response = await http.post(_baseUrl + "?auth=$authToken",
           body: json.encode({
             'description': product.description,
             'imageUrl': product.imageUrl,
@@ -98,7 +105,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateproduct(String productId, Product newProduct) async {
     final _updatebaseUrl =
-        "https://providerdemo-29777.firebaseio.com/products/$productId.json";
+        "https://providerdemo-29777.firebaseio.com/products/$productId.json?auth=$authToken";
 
     final int productIndex =
         _items.indexWhere((product) => product.id == productId);
@@ -122,7 +129,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String productId) async {
-    final url = "https://providerdemo-29777.firebaseio.com/products.json";
+    final url =
+        "https://providerdemo-29777.firebaseio.com/products.json?auth=$authToken";
     Product existingProduct;
     int existingProductIndex =
         _items.indexWhere((product) => product.id == productId);

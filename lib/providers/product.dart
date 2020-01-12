@@ -25,9 +25,10 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  void toogleFavouriteStatus() async {
+  void toogleFavouriteStatus(String authToken) async {
     var oldStatus = isFavourite;
-    final url = "https://providerdemo-29777.firebaseio.com/products/$id.json";
+    final url =
+        "https://providerdemo-29777.firebaseio.com/products/$id.json?auth=$authToken";
     isFavourite = !isFavourite;
     notifyListeners();
     try {

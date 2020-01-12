@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_pattern/providers/auth.dart';
 import 'package:provider_pattern/providers/cart.dart';
 import 'package:provider_pattern/providers/orders.dart';
 import 'package:provider_pattern/widgets/cart_item.dart';
@@ -82,6 +83,7 @@ class _OrderButtonState extends State<OrderButton> {
   var _isLoading = false;
   @override
   Widget build(BuildContext context) {
+    final authData = Provider.of<Auth>(context, listen: false);
     return FlatButton(
       child: _isLoading ? CircularProgressIndicator() : Text('ORDER NOW'),
       onPressed: (widget.cartContainer.totalAmount <= 0 || _isLoading)
@@ -93,7 +95,8 @@ class _OrderButtonState extends State<OrderButton> {
               var orderContainer = Provider.of<Orders>(context, listen: false);
               await orderContainer.addOrder(
                   widget.cartContainer.items.values.toList(),
-                  widget.cartContainer.totalAmount);
+                  widget.cartContainer.totalAmount,
+                  authData.token);
               widget.cartContainer.clearCart();
               setState(() {
                 _isLoading = false;

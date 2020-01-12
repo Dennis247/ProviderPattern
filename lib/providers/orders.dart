@@ -24,13 +24,13 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  Future<void> fetchOrders() async {
-    final _baseUrl = "https://providerdemo-29777.firebaseio.com/orders.json";
+  Future<void> fetchOrders(String authToken) async {
+//    final _baseUrl = "https://providerdemo-29777.firebaseio.com/orders.json";
     List<OrderItem> loadedOrders = [];
 
     try {
-      final response = await http
-          .get("https://providerdemo-29777.firebaseio.com/orders.json");
+      final response = await http.get(
+          "https://providerdemo-29777.firebaseio.com/orders.json?auth=$authToken");
       final extractedOrders =
           json.decode(response.body) as Map<String, dynamic>;
       if (extractedOrders != null) {
@@ -56,8 +56,10 @@ class Orders with ChangeNotifier {
     }
   }
 
-  Future<void> addOrder(List<CartItem> cartItems, double amount) async {
-    final _baseUrl = "https://providerdemo-29777.firebaseio.com/orders.json";
+  Future<void> addOrder(
+      List<CartItem> cartItems, double amount, String authToken) async {
+    final _baseUrl =
+        "https://providerdemo-29777.firebaseio.com/orders.json?auth=$authToken";
     final timeStamp = DateTime.now();
     try {
       final response = await http.post(_baseUrl,
