@@ -14,7 +14,7 @@ class UserProductScreen extends StatefulWidget {
 
 class _UserProductScreenState extends State<UserProductScreen> {
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context).getProducts();
+    await Provider.of<Products>(context).getProducts(true);
   }
 
   @override

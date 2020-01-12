@@ -25,15 +25,17 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  void toogleFavouriteStatus(String authToken) async {
+  void toogleFavouriteStatus(String authToken, String userId) async {
     var oldStatus = isFavourite;
     final url =
-        "https://providerdemo-29777.firebaseio.com/products/$id.json?auth=$authToken";
+        "https://providerdemo-29777.firebaseio.com/userFavourites/$userId/$id.json?auth=$authToken";
     isFavourite = !isFavourite;
     notifyListeners();
     try {
-      final response = await http.patch(url,
-          body: json.encode({"isFavourite": isFavourite}));
+      final response = await http.put(
+        url,
+        body: json.encode(isFavourite),
+      );
       if (response.statusCode >= 400) {
         _setFavouriteStatus(oldStatus);
       }
