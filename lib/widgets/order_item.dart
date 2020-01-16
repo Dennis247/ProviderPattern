@@ -16,27 +16,34 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
   bool _expanded = false;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text("\$${widget.orderItem.amount}"),
-            subtitle: Text(DateFormat('dd mm yyyy hh:mm')
-                .format(widget.orderItem.dateTime)),
-            trailing: IconButton(
-              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+      height: _expanded
+          ? min(widget.orderItem.products.length * 30.0 + 150.0, 295.00)
+          : 125,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text("\$${widget.orderItem.amount}"),
+              subtitle: Text(DateFormat('dd mm yyyy hh:mm')
+                  .format(widget.orderItem.dateTime)),
+              trailing: IconButton(
+                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+              ),
             ),
-          ),
-          if (_expanded)
-            Container(
-              height:
-                  min(widget.orderItem.products.length * 20.0 + 50.0, 180.00),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: _expanded
+                  ? min(widget.orderItem.products.length * 15.0 + 50.0, 180.00)
+                  : 0,
               child: ListView(
                 children: widget.orderItem.products
                     .map((prod) => Padding(
@@ -61,7 +68,8 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     .toList(),
               ),
             )
-        ],
+          ],
+        ),
       ),
     );
   }
